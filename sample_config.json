@@ -1,0 +1,59 @@
+{
+  "groups":
+  [
+    {
+      "name": "group 1",
+      "period_seconds": 10,
+      "authentication": {
+          "type": "basic",
+          "username": "test",
+          "password": "test"
+      },
+      "method": "POST",
+      "response": {
+          "type": "json",
+          "file_name": "result.json"
+      },
+      "services": [
+        {
+          "name": "service 1",
+          "url": "http://test",
+          "payload":
+          {
+            "json": {"key": "value"}
+          },
+          "response": {
+            "type": "file",
+            "file_name": "result.jpg"
+          }
+        },
+        {
+          "name": "service 2",
+          "url": "http://test",
+          "method": "GET",
+          "payload":
+          {
+            "form_data": [
+            {
+              "type": "file",
+              "key": "file_1",
+              "value": "file_1_path"
+            },
+            {
+              "type": "text",
+              "key": "text_1",
+              "value": "this is just a text"
+            }
+          ]
+          },
+          "authentication": {
+            "type": "basic",
+            "username": "test2",
+            "password": "test2"
+          },
+          "period_seconds": 20
+        }
+      ]
+    }
+  ]
+}
