@@ -3,7 +3,7 @@
   [
     {
       "name": "group 1",
-      "period_seconds": 10,
+      "period": 10,
       "auth": {
           "type": "basic",
           "username": "test",
@@ -51,7 +51,7 @@
             "username": "test2",
             "password": "test2"
           },
-          "period_seconds": 20
+          "period": 20
         }
       ]
     }
