@@ -2,6 +2,7 @@ import json
 import os.path
 from types import SimpleNamespace
 from datetime import date, datetime
+from threading import Thread
 
 
 import time
@@ -21,14 +22,15 @@ class ServiceMonitor:
         self.prop = service_prop
         self.is_updated = False
 
-        self.check()
+        self.thread = Thread(target=self.main)
+        self.thread.start()
 
     def main(self):
         while True:
             try:
                 self.check()
             except Exception as e:
-                # write the exception in the file
+                print("Exception ", self.prop.group_name, self.prop.name, e)
                 pass
             time.sleep(self.prop.period)
 
@@ -57,12 +59,12 @@ class ServiceMonitor:
         elif self.prop.method == "GET":
             response = requests.get(self.prop.url, data=data, json=json_data, files=files, auth=auth)
 
-        save_directory = os.path.join(LOG_DIRECTORY, service.group_name, service.name)
+        save_directory = os.path.join(LOG_DIRECTORY, self.prop.group_name, self.prop.name)
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
 
         now = datetime.now()
-        print(now.strftime("%d/%m/%Y %H:%M:%S"),service.group_name + " -> " + service.name + " -> " + str(response.status_code))
+        print(now.strftime("%d/%m/%Y %H:%M:%S"),self.prop.group_name + " -> " + self.prop.name + " -> " + str(response.status_code))
         if response and response.status_code == 200:
             if hasattr(self.prop, "response"):
                 if self.prop.response.type == "file":
@@ -85,7 +87,12 @@ inherited_properties = ["period", "auth", "method", "response", "group_name"]
 
 for group in config.groups:
     for service in group.services:
-        for key in inherited_properties:
-            if not hasattr(service, key) and hasattr(group, key):
-                setattr(service, key, getattr(group, key))
-        ServiceMonitor(service)
+        if service.enabled:
+            for key in inherited_properties:
+                if not hasattr(service, key) and hasattr(group, key):
+                    setattr(service, key, getattr(group, key))
+            ServiceMonitor(service)
+
+
+while True:
+    time.sleep(1)

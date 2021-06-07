@@ -4,7 +4,7 @@
     {
       "name": "group 1",
       "period_seconds": 10,
-      "authentication": {
+      "auth": {
           "type": "basic",
           "username": "test",
           "password": "test"
@@ -46,7 +46,7 @@
             }
           ]
           },
-          "authentication": {
+          "auth": {
             "type": "basic",
             "username": "test2",
             "password": "test2"
